@@ -12,16 +12,17 @@ def call(String imageName, String tag, String gcpRegion, String gcpProject, Stri
             docker push ${gcpRegion}-docker.pkg.dev/${gcpProject}/${artifactRepo}/${imageName}:latest
 
             # ---- Cleanup old builds (keep last 4) ----
-            gcloud artifacts docker images list ${gcpRegion}-docker.pkg.dev/${gcpProject}/${artifactRepo}/${imageName} --format='get(tags,digest)' \
-            | while read TAG DIGEST; do
-                # Only consider build-* tags for deletion
-                if [[ \$TAG == build-* ]]; then
-                    echo "\$TAG \$DIGEST"
-                fi
-            done | sort -r | awk 'NR>4 {print \$2}' | while read DIGEST; do
-                echo "Deleting old image with digest: \$DIGEST"
-                gcloud artifacts docker images delete -q ${gcpRegion}-docker.pkg.dev/${gcpProject}/${artifactRepo}/${imageName}@\$DIGEST
-            done
+            echo "Cleaning up old images..."
+            
+            gcloud artifacts docker images list ${gcpRegion}-docker.pkg.dev/${gcpProject}/${artifactRepo}/${imageName} \
+                --format='get(tags,digest,createTime)' \
+                | grep build- \
+                | sort -rk3 \
+                | awk 'NR>4 {print \$2}' \
+                | while read DIGEST; do
+                    echo "Deleting old image with digest: \$DIGEST"
+                    gcloud artifacts docker images delete -q ${gcpRegion}-docker.pkg.dev/${gcpProject}/${artifactRepo}/${imageName}@\$DIGEST
+                done
 
             # Optional: prune local dangling images
             docker image prune -f
