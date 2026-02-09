@@ -1,4 +1,15 @@
-def call(String serviceName, String deployLogDir) {
-    sh "docker-compose pull ${serviceName} >> ${deployLogDir}/deploy_\$(date +%F_%T).log 2>&1"
-    sh "docker-compose up -d --no-deps ${serviceName}"
-}
+sh """
+echo "===== DEBUG START ====="
+pwd
+whoami
+ls -la
+ls -la /home/imran
+ls -la /home/imran/docker-compose.yml
+docker-compose version
+echo "===== DEBUG END ====="
+
+cd /home/imran
+
+docker-compose -f /home/imran/docker-compose.yml pull ${serviceName}
+docker-compose -f /home/imran/docker-compose.yml up -d --no-deps ${serviceName}
+"""
