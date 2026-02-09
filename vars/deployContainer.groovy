@@ -1,13 +1,22 @@
-echo "===== DEBUG START ====="
-pwd
-whoami
-ls -la
-ls -la /home/imran
-ls -la /home/imran/docker-compose.yml
-docker-compose version
-echo "===== DEBUG END ====="
+def call(String serviceName, String deployLogDir) {
 
-cd /home/imran
+    sh "echo 'LIBRARY VERSION CHECK: deployContainer.groovy UPDATED AT $(date)'"
 
-docker-compose -f /home/imran/docker-compose.yml pull ${serviceName}
-docker-compose -f /home/imran/docker-compose.yml up -d --no-deps ${serviceName}
+    sh """
+        set -euxo pipefail
+
+        echo "===== DEBUG START ====="
+        pwd
+        whoami
+        ls -la /home/imran
+        ls -la /home/imran/docker-compose.yml
+        docker-compose version
+        echo "===== DEBUG END ====="
+
+        cd /home/imran
+
+        docker-compose -f docker-compose.yml pull ${serviceName}
+        docker-compose -f docker-compose.yml up -d --no-deps ${serviceName}
+    """
+}
+
