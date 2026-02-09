@@ -1,4 +1,3 @@
-sh """
 echo "===== DEBUG START ====="
 pwd
 whoami
@@ -12,4 +11,3 @@ cd /home/imran
 
 docker-compose -f /home/imran/docker-compose.yml pull ${serviceName}
 docker-compose -f /home/imran/docker-compose.yml up -d --no-deps ${serviceName}
-"""
