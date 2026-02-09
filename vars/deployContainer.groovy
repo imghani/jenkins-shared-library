@@ -2,24 +2,22 @@ def call(String serviceName, String deployLogDir) {
 
     sh 'echo "LIBRARY VERSION CHECK: deployContainer.groovy LOADED"'
 
-    sh(
-        script: """
-            set -euxo pipefail
+    sh '''
+        #!/usr/bin/env bash
+        set -euxo pipefail
 
-            echo "===== DEBUG START ====="
-            pwd
-            whoami
-            ls -la /home/imran
-            ls -la /home/imran/docker-compose.yml
-            docker-compose version
-            echo "===== DEBUG END ====="
+        echo "===== DEBUG START ====="
+        pwd
+        whoami
+        ls -la /home/imran
+        ls -la /home/imran/docker-compose.yml
+        docker-compose version
+        echo "===== DEBUG END ====="
 
-            cd /home/imran
+        cd /home/imran
 
-            docker-compose -f docker-compose.yml pull ${serviceName}
-            docker-compose -f docker-compose.yml up -d --no-deps ${serviceName}
-        """,
-        shell: '/bin/bash'
-    )
+        docker-compose -f docker-compose.yml pull ${serviceName}
+        docker-compose -f docker-compose.yml up -d --no-deps ${serviceName}
+    '''
 }
 
