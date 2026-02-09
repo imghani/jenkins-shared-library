@@ -1,6 +1,6 @@
 def call(String serviceName, String deployLogDir) {
 
-    sh "echo 'LIBRARY VERSION CHECK: deployContainer.groovy UPDATED AT $(date)'"
+    sh "echo 'LIBRARY VERSION CHECK: deployContainer.groovy UPDATED'"
 
     sh """
         set -euxo pipefail
