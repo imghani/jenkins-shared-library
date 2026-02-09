@@ -2,7 +2,6 @@ def call(String serviceName, String deployLogDir) {
 
     sh 'echo "LIBRARY VERSION CHECK: deployContainer.groovy LOADED"'
 
-    // Force bash explicitly (because Jenkins 'sh' uses /bin/sh by default)
     sh(
         label: "Deploy ${serviceName}",
         script: """
@@ -10,20 +9,14 @@ def call(String serviceName, String deployLogDir) {
                 set -euo pipefail
                 set -x
 
-                echo "===== DEBUG START ====="
-                pwd
-                whoami
-                ls -la /home/imran || true
-                ls -la /home/imran/docker-compose.yml || true
-                docker-compose version || true
-                echo "===== DEBUG END ====="
+                export BACKEND_IMAGE=us-central1-docker.pkg.dev/paklawassistapp/backend/workspace-backend:latest
+                export FRONTEND_IMAGE=us-central1-docker.pkg.dev/paklawassistapp/frontend/workspace-frontend:latest
 
                 cd /home/imran
 
-                docker-compose -f docker-compose.yml pull ${serviceName}
-                docker-compose -f docker-compose.yml up -d --no-deps ${serviceName}
+                docker-compose pull ${serviceName}
+                docker-compose up -d --no-deps ${serviceName}
             '
         """
     )
 }
-
